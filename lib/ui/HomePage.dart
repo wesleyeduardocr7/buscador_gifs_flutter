@@ -24,13 +24,6 @@ class _HomePageState extends State<HomePage> {
     return json.decode(response.body);
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _getGifs().then((map){
-        print(map);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,12 +51,17 @@ class _HomePageState extends State<HomePage> {
              ),
              style: TextStyle(color: Colors.white, fontSize: 18.0),
              textAlign: TextAlign.center,
+             onSubmitted: (text){
+               setState(() {
+                 _search = text;
+                 _offset = 0;
+               });
+             },
            ),
           ),
 
           Expanded(
             child: FutureBuilder(
-
               future: _getGifs(),
               builder: (context,snapshot){
                 switch(snapshot.connectionState){
@@ -90,6 +88,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  int _getCount(List data){
+    if(_search == null){
+      return data.length;
+    } else {
+      return data.length + 1;
+    }
+  }
 
   Widget _createGifTable(BuildContext context, AsyncSnapshot snapshot){
     return GridView.builder(
@@ -99,15 +104,33 @@ class _HomePageState extends State<HomePage> {
             crossAxisSpacing: 10.0,
             mainAxisSpacing: 10.0
         ),
-          itemCount: snapshot.data["data"].length,
-          itemBuilder: (context, index){
+        itemCount: _getCount(snapshot.data["data"]),
+        itemBuilder: (context, index){
+          if(_search == null || index < snapshot.data["data"].length)
             return GestureDetector(
               child: Image.network(snapshot.data["data"][index]["images"]["fixed_height"]["url"],
                 height: 300.0,
                 fit: BoxFit.cover,
               ),
             );
-
+          else
+            return Container(
+              child: GestureDetector(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(Icons.add, color: Colors.white, size: 70.0,),
+                    Text("Carregar mais...",
+                      style: TextStyle(color: Colors.white, fontSize: 22.0),)
+                  ],
+                ),
+                onTap: (){
+                  setState(() {
+                    _offset += 19;
+                  });
+                },
+              ),
+            );
         }
     );
   }
