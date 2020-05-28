@@ -47,9 +47,19 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: <Widget>[
 
-
-
-
+        Padding(
+          padding: EdgeInsets.only(top: 10.0),
+           child: TextField(
+             scrollPadding: EdgeInsets.all(7.0),
+             decoration: InputDecoration(
+                 labelText: "Pesquise Aqui",
+                 labelStyle: TextStyle(color: Colors.white),
+                 border: OutlineInputBorder()
+             ),
+             style: TextStyle(color: Colors.white, fontSize: 18.0),
+             textAlign: TextAlign.center,
+           ),
+          ),
         ],
       ),
     );
